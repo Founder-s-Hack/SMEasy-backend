@@ -11,8 +11,8 @@ public class Transaction {
     @MongoId
     private String transactionId;
     private String userId;
-    private float transactionAmount;
-    private float commissionCharged = 0.9f;
+    private float transactionAmount; // The total amount involved in this transaction
+    private float commissionCharged = 0.15f; // The commission charged for this transaction
     private Date date = new Date();
 
 }

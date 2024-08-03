@@ -24,17 +24,21 @@ public class LendingService {
         this.loanRepository = loanRepository;
     }
 
+    /**
+     * Processes a loan application by validating past and current business data, and applicant's age.
+     * Saves the application if no errors are found and creates a new loan record.
+     */
     public List<String> processRequest(LoanApplicationRequest request) {
 
-        List<String> errors = new ArrayList<>();
+        List<String> errors = new ArrayList<>(); // to store all the errors message of the application
 
-        if (request.getPastBusinesses()) {
-            validatePastBusinesses(request.getPastBusinessData(), errors);
+        if (request.getPastBusinesses()) { // getPastBusinesses is a boolean indicating if past businesses exist
+            validatePastBusinesses(request.getPastBusinessData(), errors); // only if there are past businesses only have to validate the data
         }
         validateCurrentBusiness(request, errors);
         validateAge(request.getAge(), errors);
 
-        if (errors.isEmpty()) {
+        if (errors.isEmpty()) { // application will be accepted if no errors are occurred and to be fit into ML model later
             this.loanApplicationRequestRepository.save(request);
 
             // CALL ML
@@ -50,8 +54,11 @@ public class LendingService {
         return errors;
     }
 
+    /**
+     * Requires at least one past business record if the applicant has past businesses and validates each past business data.
+     */
     private void validatePastBusinesses(List<BusinessData> pastBusinesses, List<String> errors) {
-        if (pastBusinesses == null) {
+        if (pastBusinesses == null || pastBusinesses.isEmpty()) {
             errors.add("Past business history is required for existing businesses.");
         }
         else {
@@ -65,10 +72,15 @@ public class LendingService {
         }
     }
 
+    /**
+     * Validates current business data in the loan application.
+     * For existing businesses, checks that the duration and monthly revenue are provided.
+     * For new businesses, ensures projected revenue is positive.
+     */
     private void validateCurrentBusiness(LoanApplicationRequest request, List<String> errors) {
-        if (request.getIsNewBusiness()) {
+        if (!request.getIsNewBusiness()) {
             validateDuration(request.getCurrentBusinessData(), errors);
-            if (request.getCurrentBusinessData().getMonthlyRevenue() == null) {
+            if (request.getCurrentBusinessData().getMonthlyRevenue() == null || request.getCurrentBusinessData().getMonthlyRevenue().isEmpty()) {
                 errors.add("An existing business must provide its previous monthly revenue.");
             }
             else{
@@ -84,6 +96,10 @@ public class LendingService {
         validateAddress(request.getCurrentBusinessData(),errors);
     }
 
+    /**
+     * Only accepts new businesses located in Australia and requires information only for past businesses
+     * that were located in Australia.
+     */
     private void validateAddress(BusinessData business, List<String> errors) {
         if (!"Australia".equalsIgnoreCase(business.getAddress().getCountry())) {
             errors.add("Business location must be in Australia.");
@@ -129,12 +145,20 @@ public class LendingService {
         }
     }
 
+    /**
+     Validates the monthly revenue data for a business by ensuring it contains data for no more than the
+     * most recent 12 months. This ensures that only the most recent and relevant revenue data is considered
+     * for the business evaluation.
+     */
     private void validateMonthlyRevenue(BusinessData business, List<String> errors) {
         if (business.getMonthlyRevenue().size() > 12) {
             errors.add(business.getBusinessName() + " : Only the most recent 12 months of monthly revenue data is required.");
         }
     }
 
+    /**
+     * Validates the duration of operation for a past / exisitng business, ensuring it has been in operation for at least 1 month.
+     */
     private void validateDuration(BusinessData business, List<String> errors) {
         if (business.getYearsInOperation().getYears() <= 0 && business.getYearsInOperation().getMonths()<=0) {
             errors.add(business.getBusinessName() + " : Invalid years in operation.");

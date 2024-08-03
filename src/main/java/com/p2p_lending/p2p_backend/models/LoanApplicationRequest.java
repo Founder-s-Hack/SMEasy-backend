@@ -17,13 +17,13 @@ public class LoanApplicationRequest {
     private String id;
 
     @Nullable
-    private List<BusinessData> pastBusinessData;
-    private BusinessData currentBusinessData;
-    private Boolean isNewBusiness;
-    private Boolean pastBusinesses;
-    private float loanAmount;
-    private float projectedRevenue;
-    private int age;
-    private int employeeCount;
+    private List<BusinessData> pastBusinessData; // List of data for past businesses associated with the applicant
+    private BusinessData currentBusinessData; // Data for the current business for which the loan is being applied
+    private Boolean isNewBusiness; // Indicates if this loan application is for a new business
+    private Boolean pastBusinesses; // Indicates if the applicant has any past businesses
+    private float loanAmount; // The amount of loan requested by the applicant
+    private float projectedRevenue; // The projected annual revenue of the business
+    private int age; // age of the applicant
+    private int employeeCount; // The number of employees in the business
     private String UserId;
 }

@@ -18,6 +18,10 @@ public class TransactionService {
         this.loanRepository = loanRepository;
     }
 
+    /**
+     * Processes a transaction to repay a loan, updating the loan balance and status accordingly.
+     * Returns a message indicating the result of the transaction.
+     */
     public String processTransaction(Transaction transaction) {
 
         Optional<Loan> optionalLoan = this.loanRepository.findById(transaction.getUserId());

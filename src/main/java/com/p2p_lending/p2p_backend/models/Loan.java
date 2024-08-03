@@ -15,8 +15,8 @@ public class Loan {
     private String id;
 
     private String userId;
-    private float amount;
-    private float balance;
-    private Boolean paidOff;
+    private float amount; // Total amount of the loan
+    private float balance; // Remaining balance to be repaid
+    private Boolean paidOff; // Indicates if the loan has been fully repaid
 
 }
