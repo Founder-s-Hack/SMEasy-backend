@@ -1,16 +1,28 @@
 package com.p2p_lending.p2p_backend.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.p2p_lending.p2p_backend.models.*;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class LendingService {
 
-    public List<String> processRequest(LoanApplicationRequest request) {
+    private final RestTemplate restTemplate;
 
+    public LendingService() {
+        this.restTemplate = new RestTemplate();
+    }
+
+    public List<String> processRequest(LoanApplicationRequest request) {
         List<String> errors = new ArrayList<>();
 
         if (request.getPastBusinesses()) {
@@ -18,6 +30,14 @@ public class LendingService {
         }
         validateCurrentBusiness(request, errors);
         validateAge(request.getAge(), errors);
+
+        if (errors.isEmpty()) {
+            // Make API call to Flask application
+            FlaskApiResponse response = makeFlaskApiCall(request);
+            if (!response.isApproved()) {
+                errors.add("Loan application not approved.");
+            }
+        }
 
         return errors;
     }
@@ -118,5 +138,11 @@ public class LendingService {
             errors.add("Age must be above 18.");
         }
     }
+
+    private FlaskApiResponse makeFlaskApiCall(LoanApplicationRequest request) {
+        String flaskApiUrl = "http://localhost:6969/lending/request-loan";
+        return restTemplate.postForObject(flaskApiUrl, request, FlaskApiResponse.class);
+    }
+
 
 }

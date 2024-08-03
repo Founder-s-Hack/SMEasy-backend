@@ -21,4 +21,12 @@ public class LoanApplicationRequest {
     private int numberOfJobsCreated;
     private int numberOfJobsRetained;
 
+    private int orgEmployeeCount;
+    private boolean orgIsNew;
+    private String orgANZSIC;
+    private Boolean orgIsUrban;
+    private Float loanTermMonths;
+    private Float orgAnnualRevenue;
+    private Float loanInterestRate;
+
 }

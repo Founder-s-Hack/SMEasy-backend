@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients 
 public class P2PBackendApplication {
 
     public static void main(String[] args) {
