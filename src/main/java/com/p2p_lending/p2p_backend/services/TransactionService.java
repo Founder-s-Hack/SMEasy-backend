@@ -19,7 +19,7 @@ public class TransactionService {
     }
 
     public String processTransaction(Transaction transaction) {
-        // Retrieve the loan once
+
         Optional<Loan> optionalLoan = this.loanRepository.findById(transaction.getUserId());
 
         if (optionalLoan.isEmpty()) {
@@ -43,7 +43,6 @@ public class TransactionService {
             loan.setBalance(newRepayBalance);
         }
 
-        // Save the updated loan
         this.loanRepository.save(loan);
 
         return "Balance to repay: $" + loan.getBalance();
