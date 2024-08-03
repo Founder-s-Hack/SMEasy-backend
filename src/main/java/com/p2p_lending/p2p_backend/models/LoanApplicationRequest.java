@@ -19,7 +19,7 @@ public class LoanApplicationRequest {
     @Nullable
     private List<BusinessData> pastBusinessData;
     private BusinessData currentBusinessData;
-    private BusinessStatus businessStatus;
+    private Boolean isNewBusiness;
     private Boolean pastBusinesses;
     private float loanAmount;
     private float projectedRevenue;

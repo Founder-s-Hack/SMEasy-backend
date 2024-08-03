@@ -66,7 +66,7 @@ public class LendingService {
     }
 
     private void validateCurrentBusiness(LoanApplicationRequest request, List<String> errors) {
-        if (request.getBusinessStatus().equals(BusinessStatus.EXISTING)) {
+        if (request.getIsNewBusiness()) {
             validateDuration(request.getCurrentBusinessData(), errors);
             if (request.getCurrentBusinessData().getMonthlyRevenue() == null) {
                 errors.add("An existing business must provide its previous monthly revenue.");
@@ -74,7 +74,7 @@ public class LendingService {
             else{
                 validateMonthlyRevenue(request.getCurrentBusinessData(), errors);
             }
-        } else if (request.getBusinessStatus().equals(BusinessStatus.NEW)) {
+        } else {
             if (request.getProjectedRevenue() <= 0) {
                 errors.add("Invalid projected revenue.");
             }
@@ -98,28 +98,28 @@ public class LendingService {
         }
 
         switch (code.length()) {
-            case 1:
+            case 1 -> {
                 if (!code.matches("[A-S]")) {
                     errors.add(business.getBusinessName() + " : Invalid ANZSIC code: a single letter must be between A and S.");
                 }
-                break;
-            case 2:
+            }
+            case 2 -> {
                 if (!code.matches("0[1-9]|[1-8][0-9]|9[0-6]")) {
                     errors.add(business.getBusinessName() + " : Invalid ANZSIC code: two digits must be between 01 and 96.");
                 }
-                break;
-            case 3:
+            }
+            case 3 -> {
                 if (!code.matches("0[1-9][1-9]|[1-8][0-9][0-9]|9[0-5][0-9]|960")) {
                     errors.add(business.getBusinessName() + " : Invalid ANZSIC code: three digits must be between 011 and 960.");
                 }
-                break;
-            case 4:
+            }
+            case 4 -> {
                 if (!code.matches("0[1-9][1-9][1-9]|[1-8][0-9][0-9][0-9]|9[0-5][0-9][0-9]|960[0-3]")) {
                     errors.add(business.getBusinessName() + " : Invalid ANZSIC code: four digits must be between 0111 and 9603.");
                 }
-                break;
-            default:
-                errors.add(business.getBusinessName() + " : Invalid ANZSIC code length: must be 1 to 4 characters.");
+            }
+            default ->
+                    errors.add(business.getBusinessName() + " : Invalid ANZSIC code length: must be 1 to 4 characters.");
         }
     }
 

@@ -12,15 +12,10 @@ import java.util.List;
 @Slf4j
 public class LendingController {
 
-    private LendingService lendingService;
+    private final LendingService lendingService;
 
     public LendingController(LendingService lendingService) {
         this.lendingService = lendingService;
-    }
-
-    @GetMapping("/test")
-    public String testEndpoint() {
-        return "Test Successful";
     }
 
     @PostMapping("/validation")

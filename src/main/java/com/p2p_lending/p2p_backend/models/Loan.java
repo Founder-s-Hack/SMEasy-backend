@@ -17,6 +17,6 @@ public class Loan {
     private String userId;
     private float amount;
     private float balance;
-    private boolean paidOff;
+    private Boolean paidOff;
 
 }
