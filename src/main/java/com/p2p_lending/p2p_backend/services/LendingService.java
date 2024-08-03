@@ -1,6 +1,8 @@
 package com.p2p_lending.p2p_backend.services;
 
 import com.p2p_lending.p2p_backend.models.*;
+import com.p2p_lending.p2p_backend.repositories.LoanApplicationRequestRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -8,6 +10,13 @@ import java.util.List;
 
 @Service
 public class LendingService {
+
+    private final LoanApplicationRequestRepository loanApplicationRequestRepository;
+
+    @Autowired
+    public LendingService(LoanApplicationRequestRepository loanApplicationRequestRepository) {
+        this.loanApplicationRequestRepository = loanApplicationRequestRepository;
+    }
 
     public List<String> processRequest(LoanApplicationRequest request) {
 
@@ -18,6 +27,10 @@ public class LendingService {
         }
         validateCurrentBusiness(request, errors);
         validateAge(request.getAge(), errors);
+
+        if (errors.isEmpty()) {
+            this.loanApplicationRequestRepository.save(request);
+        }
 
         return errors;
     }
