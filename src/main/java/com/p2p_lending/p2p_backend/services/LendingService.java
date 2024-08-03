@@ -106,6 +106,9 @@ public class LendingService {
         }
     }
 
+    /**
+     * Validates the ANZSIC code format for the business, ensuring it meets length and character requirements.
+     */
     private void validateAnzsicCode(BusinessData business, List<String> errors) {
         String code = business.getAnzsicCode().trim();
         if (code.isEmpty()) {
@@ -139,6 +142,9 @@ public class LendingService {
         }
     }
 
+    /**
+     * Validates the ABN format for the business.
+     */
     private void validateAbn(BusinessData business, List<String> errors) {
         if (!business.getAbn().matches("^(\\d *?){11}$")) {
             errors.add(business.getBusinessName() + " : Invalid abn");
@@ -165,6 +171,9 @@ public class LendingService {
         }
     }
 
+    /**
+     * Validates that the applicant is 18 or older; loans cannot be provided to those under 18.
+     */
     private void validateAge(int age, List<String> errors) {
         if (age < 18) {
             errors.add("Age must be above 18.");
