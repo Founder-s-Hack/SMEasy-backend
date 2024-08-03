@@ -1,0 +1,83 @@
+
+
+
+package com.p2p_lending.p2p_backend.controllers;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+@RestController
+@RequestMapping("/api")
+public class LendingController {
+
+    @PostMapping("/submitABN")
+    public BusinessDetails getABNDetails(@RequestParam String abn) {
+        // The URL of the ABR API with the ABN passed as a parameter
+        String url = "https://abr.business.gov.au/json/AbnDetails.aspx?abn=" + abn + "&callback=?";
+
+        // Create an instance of RestTemplate
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Call the ABR API and get the response
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        // Parse the response to extract business details
+        BusinessDetails businessDetails = extractBusinessDetails(response.getBody());
+
+        // Return the business details
+        return businessDetails;
+    }
+
+    // Method to extract business details from the ABR API response
+    private BusinessDetails extractBusinessDetails(String jsonResponse) {
+        try {
+            // Remove the callback part from the response (if any)
+            jsonResponse = jsonResponse.replaceAll("^\\?\\(", "").replaceAll("\\);$", "");
+
+            // Parse the JSON response
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode rootNode = mapper.readTree(jsonResponse);
+            String businessName = rootNode.path("EntityName").asText();
+            String status = rootNode.path("EntityStatus").asText();
+
+            // Return a new BusinessDetails object with the extracted data
+            return new BusinessDetails(businessName, status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new BusinessDetails("Unknown", "Unknown");
+        }
+    }
+}
+
+// Class representing business details
+class BusinessDetails {
+    private String businessName;
+    private String status;
+
+    public BusinessDetails(String businessName, String status) {
+        this.businessName = businessName;
+        this.status = status;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+}
