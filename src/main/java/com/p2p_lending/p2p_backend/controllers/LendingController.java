@@ -27,5 +27,4 @@ public class LendingController {
     public List<String> postEndpoint(@RequestBody LoanApplicationRequest request) {
         return this.lendingService.processRequest(request);
     }
-
 }

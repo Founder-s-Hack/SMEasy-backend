@@ -25,5 +25,5 @@ public class LoanApplicationRequest {
     private float projectedRevenue;
     private int age;
     private int employeeCount;
-
+    private String UserId;
 }
