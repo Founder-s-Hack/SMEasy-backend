@@ -18,7 +18,6 @@ public class LoanApplicationRequest {
     private float loanAmount;
     private float projectedRevenue;
     private int age;
-    private int numberOfJobsCreated;
-    private int numberOfJobsRetained;
+    private int employeeCount;
 
 }
